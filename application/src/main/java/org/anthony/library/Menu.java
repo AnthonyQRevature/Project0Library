@@ -7,14 +7,20 @@ import java.util.Scanner;
 import java.util.Stack;
 
 import org.anthony.library.MenuTree.Entry;
+import org.anthony.library.repository.dao.BookDao;
 import org.anthony.library.repository.dao.MemberDao;
+import org.anthony.library.repository.dao.TitleDao;
+import org.anthony.library.repository.dao.TitleDataDao;
+import org.anthony.library.service_layer.service.BookService;
 import org.anthony.library.service_layer.service.MemberService;
+import org.anthony.library.util.LibraryLogger;
 
 public class Menu 
 {
     AccountController accountController = new AccountController(new MemberService(new MemberDao()));
+    BookController bookController = new BookController(new BookService(new BookDao(), new TitleDao(), new TitleDataDao()));
 
-    public static class MenuEntry
+    public class MenuEntry
     {
         MenuTree.Entry entry;
 
@@ -28,6 +34,7 @@ public class Menu
         protected List<MenuTree.Entry> RetrieveMenu(MenuTree.Entry[] allOptions, int level)
         {
             ArrayList<MenuTree.Entry> validEntries = new ArrayList<>();
+            List<MenuTree.Entry> ret = validEntries;
 
             for (var e : allOptions) 
             {
@@ -37,34 +44,33 @@ public class Menu
                 }
             }
 
-            return validEntries;
+            if (entry.content_request != null)
+            {
+                ret = ContentRequest(entry.content_request, validEntries);
+            }
+
+            return ret;
         }
 
         //virtual
-        public void PrintMenu(boolean top)
+        public void PrintMenu()
         {
             List<Entry> validOptions = RetrieveMenu();
 
             String header = entry.getHeader();
 
             //if (state.account != null) {header = header.replace("{NAME}", state.account.accountName);}
-            top = entry.parent == null && top;
-            PrintMenu(header, validOptions, top);
+            PrintMenu(header, validOptions);
         }
-        protected void PrintMenu(String header, List<Entry> options, boolean top)
+        protected void PrintMenu(String header, List<Entry> options)
         {
             System.out.println(header);
-
-            if (entry.content_request != null)
-            {
-
-            }
 
             for (int i = 0; i < options.size(); i++) {
                 var option = options.get(i);
                 System.out.printf("%d: %s\n", i+1, option.name);
             }
-            if (top) System.out.printf("%d: exit\n", options.size() + 1);
+            if (entry.parent == null && menuStack.size() == 1) System.out.printf("%d: exit\n", options.size() + 1);
             else System.out.printf("%d: go back\n", options.size() + 1);
         }
 
@@ -72,7 +78,7 @@ public class Menu
 
         MenuEntry(MenuTree.Entry e) {this.entry = e;}
     }
-    public static class AccMenuEntry extends MenuEntry
+    public class AccMenuEntry extends MenuEntry
     {
         Account acct;
 
@@ -88,14 +94,13 @@ public class Menu
         }
 
         @Override
-        public void PrintMenu(boolean top)
+        public void PrintMenu()
         {
             List<Entry> validOptions = RetrieveMenu();
             String header = entry.getHeader();
 
             header = header.replace("{NAME}", acct.accountName);
-            top = entry.parent == null && top;
-            PrintMenu(header, validOptions, top);
+            PrintMenu(header, validOptions);
         }
     }
 
@@ -120,7 +125,7 @@ public class Menu
                 catch (NumberFormatException e)
                 {
                     System.out.println("invalid number");
-                    continue;
+                    //continue;
                 }
             }
     
@@ -135,61 +140,73 @@ public class Menu
             else
             {
                 //incorrect credentials try again
-                continue;
+                //continue;
             }
         }
         return null;
     }
-    public static void ContentRequest(String request)
+    public List<MenuTree.Entry> ContentRequest(String request, List<MenuTree.Entry> options)
     {
         //more hardcoded requests to the service layer
+        switch (request)
+        {
+            case "display_books":
+                var titles = bookController.RetrieveAllTitles();
+                ArrayList<MenuTree.Entry> ret = new ArrayList<>();
+
+                for (var title : titles)
+                {
+                    var e = new Entry();
+                    e.name = title.getTitle();
+                    e.service_request = String.format("book_details %d", title.getIsbn());
+                    ret.add(e);
+                }
+                return ret;
+            default:
+                return options;
+        }
     }
     public void HandleRequest(String request, Scanner input)
     {
+        String[] args = request.trim().split(" ");
         //hardcoded requests to service layer
-        switch (request) {
-            case "login0":
+        switch (args[0]) {
+            case "login":
             {
-                //login successful
-                Account acct = accountController.LoginGuest();
-                //currentState.account = acct;
-                //currentState.currentMenu = currentState.fullMenu.menu_login;
-                //return currentState;
-                menuStack.push(new AccMenuEntry(fullMenu.menu_login, acct));
-                return;
-            }
-            case "login1":
-            {
-                Account acct = PromptLogin(1, input);
-                if (acct != null)
+                try
                 {
-                    //login successful
-                    menuStack.push(new AccMenuEntry(fullMenu.menu_login, acct));
-                    return;
+                    int num = Integer.parseInt(args[1]);
+                    if (num == 0)
+                    {
+                        //login guest
+                        Account acct = accountController.LoginGuest();
+                        menuStack.push(new AccMenuEntry(fullMenu.menu_login, acct));
+                        //return;
+                    }
+                    else
+                    {
+                        Account acct = PromptLogin(num, input);
+                        if (acct != null)
+                        {
+                            //login successful
+                            menuStack.push(new AccMenuEntry(fullMenu.menu_login, acct));
+                            //return;
+                        }
+                        else
+                        {
+                            //login unsuccessful
+                            //return;
+                        }
+                    }
                 }
-                else
+                catch (Exception e)
                 {
-                    //login unsuccessful
-                    return;
-                }
-            }
-            case "login2":
-            {
-                Account acct = PromptLogin(2, input);
-                if (acct != null)
-                {
-                    //login successful
-                    menuStack.push(new AccMenuEntry(fullMenu.menu_login, acct));
-                    return;
-                }
-                else
-                {
-                    //login unsuccessful
-                    return;
+                    LibraryLogger.LogException(e);
                 }
             }
+            
             default:
-                return;
+                //return;
         }
     }
 
@@ -198,7 +215,7 @@ public class Menu
         var menuEntry = menuStack.peek();
         var validOptions = menuEntry.RetrieveMenu();
 
-        menuEntry.PrintMenu(menuStack.size() == 1);
+        menuEntry.PrintMenu();
 
         //loop until valid input
         while (true) { 

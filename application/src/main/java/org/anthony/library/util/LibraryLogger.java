@@ -7,7 +7,7 @@ public class LibraryLogger {
     private static final Logger logger = LoggerFactory.getLogger(LibraryLogger.class);
 
     public static Logger getLogger() { return logger; }
-    public static void LogException(Exception e) 
+    public static void LogException(Throwable e) 
     {
         logger.error("An error occured", e);
     }

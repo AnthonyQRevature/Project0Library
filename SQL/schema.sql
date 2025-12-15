@@ -35,7 +35,7 @@ CREATE TABLE if NOT EXISTS borrows (
 );
 CREATE TABLE if NOT EXISTS genres (
     genre_id SERIAL PRIMARY KEY,
-    genre_name VARCHAR(50) NOT NULL
+    genre_name VARCHAR(50) NOT NULL UNIQUE
 );
 CREATE TABLE if NOT EXISTS categories (
     isbn INT REFERENCES titles(isbn),

@@ -54,7 +54,7 @@ public class BookService {
     }
     TitleData ConvertTitleData(TitleDataEntity e)
     {
-        return new TitleData(e.getNum_copies(), new Title(e.getIsbn(), e.getTitle()));
+        return new TitleData(e.getNum_copies(), new Title(e.getIsbn(), e.getTitle()), e.getGenres());
     }
     List<TitleData> ConvertTitleData(List<TitleDataEntity> e)
     {

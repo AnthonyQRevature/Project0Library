@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.anthony.library.repository.ConnectionManager;
-import org.anthony.library.repository.entity.Borrow;
 import org.anthony.library.repository.entity.TitleDataEntity;
 import org.anthony.library.util.LibraryLogger;
 
@@ -29,7 +28,8 @@ public class TitleDataDao
         (
             rs.getInt("isbn"),
             rs.getString("title"),
-            rs.getInt("num_copies")
+            rs.getInt("num_copies"),
+            rs.getString("genre")
         );
     }
 

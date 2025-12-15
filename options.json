@@ -9,15 +9,15 @@
             },
             {
                 "name": "I am a Library Member",
-                "service_request": "login1"
+                "service_request": "login 1"
             },
             {
                 "name": "I am a Librarian",
-                "service_request": "login2"
+                "service_request": "login 2"
             },
             {
                 "name":"continue as Guest",
-                "service_request": "login0"
+                "service_request": "login 0"
             }
         ]
     },
@@ -28,6 +28,7 @@
             {
                 "name": "Browse books",
                 "header": "PLACEHOLDER",
+                "content_request": "display_books",
                 "options": []
             },
             {

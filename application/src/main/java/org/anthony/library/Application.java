@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 
+import org.anthony.library.repository.ConnectionManager;
 import org.anthony.library.util.LibraryLogger;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -21,6 +22,19 @@ public class Application {
     public static final File MENUFILE = new File("options.json");
     
     public static void main(String[] args) {
+
+        //check connection
+        try
+        {
+            ConnectionManager.getConnection();
+        }
+        catch (ExceptionInInitializerError e)
+        {
+            System.out.println("Could not establish a connection to server. Stopping.");
+            LibraryLogger.LogException(e);
+            System.exit(1);
+        }
+
         Scanner input = new Scanner(System.in);
         try
         {
