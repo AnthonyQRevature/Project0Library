@@ -1,0 +1,59 @@
+{
+    "menu": {
+        "header": "Welcome",
+        "options": [
+            {
+                "name": "About",
+                "header": "Welcome to the Library Application. You may login with your login information to checkout/return books as well as pay off fees. If you want to browse the Library's collection you may choose to login as a guest.",
+                "options": []
+            },
+            {
+                "name": "I am a Library Member",
+                "service_request": "login1"
+            },
+            {
+                "name": "I am a Librarian",
+                "service_request": "login2"
+            },
+            {
+                "name":"continue as Guest",
+                "service_request": "login0"
+            }
+        ]
+    },
+    "menu_login": {
+        "header": "Welcome {NAME}",
+        "options": 
+        [
+            {
+                "name": "Browse books",
+                "header": "PLACEHOLDER",
+                "options": []
+            },
+            {
+                "name": "View my checked out books",
+                "header": "PLACEHOLDER",
+                "options": [],
+                "level": 1
+            },
+            {
+                "name": "Return my books",
+                "header": "PLACEHOLDER",
+                "options": [],
+                "level": 1
+            },
+            {
+                "name": "Pay my fines",
+                "header": "PLACEHOLDER",
+                "options": [],
+                "level": 1
+            },
+            {
+                "name": "Restock Books",
+                "header": "PLACEHOLDER",
+                "options": [],
+                "level": 2
+            }
+        ]
+    }
+}
