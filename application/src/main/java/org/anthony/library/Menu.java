@@ -12,6 +12,7 @@ import org.anthony.library.repository.dao.MemberDao;
 import org.anthony.library.repository.dao.TitleDao;
 import org.anthony.library.repository.dao.TitleDataDao;
 import org.anthony.library.service_layer.service.BookService;
+import org.anthony.library.service_layer.service.BorrowService;
 import org.anthony.library.service_layer.service.MemberService;
 import org.anthony.library.util.LibraryLogger;
 
@@ -19,6 +20,7 @@ public class Menu
 {
     AccountController accountController = new AccountController(new MemberService(new MemberDao()));
     BookController bookController = new BookController(new BookService(new BookDao(), new TitleDao(), new TitleDataDao()));
+    BorrowService borrowService = new BorrowService();
 
     public class MenuEntry
     {
@@ -90,7 +92,14 @@ public class Menu
         @Override
         public List<MenuTree.Entry> RetrieveMenu()
         {
-            return RetrieveMenu(entry.options, acct.level);
+            var validOptions = RetrieveMenu(entry.options, acct.level);
+            for (var option : validOptions) 
+            {
+                //should use replaceAll?
+                if (option.content_request != null)
+                    option.content_request = option.content_request.replace("{CARD_ID}", Integer.toString(acct.getLibraryCard()));
+            }
+            return validOptions;
         }
 
         @Override
@@ -99,7 +108,9 @@ public class Menu
             List<Entry> validOptions = RetrieveMenu();
             String header = entry.getHeader();
 
-            header = header.replace("{NAME}", acct.accountName);
+            //should use replaceAll?
+            if (header != null) 
+                header = header.replace("{NAME}", acct.getAccountname());
             PrintMenu(header, validOptions);
         }
     }
@@ -148,20 +159,41 @@ public class Menu
     public List<MenuTree.Entry> ContentRequest(String request, List<MenuTree.Entry> options)
     {
         //more hardcoded requests to the service layer
-        switch (request)
+        String[] args = request.split(" ");
+        ArrayList<MenuTree.Entry> ret = new ArrayList<>();
+        switch (args[0])
         {
             case "display_books":
                 var titles = bookController.RetrieveAllTitles();
-                ArrayList<MenuTree.Entry> ret = new ArrayList<>();
 
                 for (var title : titles)
                 {
-                    var e = new Entry();
+                    Entry e = new Entry();
                     e.name = title.getTitle();
                     e.service_request = String.format("book_details %d", title.getIsbn());
                     ret.add(e);
                 }
                 return ret;
+            case "display_borrows":
+                try
+                {
+                    int card_id = Integer.parseInt(args[1]);
+                    var borrows = borrowService.GetBorrowsForMember(card_id);
+
+                    for (var borrow : borrows)
+                    {
+                        Entry e = new Entry();
+                        e.name = borrow.get_title();
+                        e.service_request = String.format("borrow_details %d %d", card_id, borrow.get_isbn());
+                        ret.add(e);
+                    }
+                    return ret;
+                }
+                catch (Exception e)
+                {
+                    LibraryLogger.LogException(e);
+                    return options;
+                }
             default:
                 return options;
         }
@@ -204,7 +236,17 @@ public class Menu
                     LibraryLogger.LogException(e);
                 }
             }
-            
+            case "book_details":
+                try
+                {
+                    int isbn = Integer.parseInt(args[1]);
+                    
+                }
+                catch (Exception e)
+                {
+                    LibraryLogger.LogException(e);
+                }
+                break;
             default:
                 //return;
         }

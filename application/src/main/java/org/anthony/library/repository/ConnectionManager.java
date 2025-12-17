@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Properties;
 
 public class ConnectionManager {
@@ -33,7 +34,12 @@ public class ConnectionManager {
 
             }catch(IOException | ClassNotFoundException e){
                 throw new RuntimeException("Failed to load database configuration");
-            }catch(Exception e){
+            }
+            catch(SQLException e)
+            {
+                throw new RuntimeException("Failed to connect to database");
+            }
+            catch(Exception e){
                 throw new RuntimeException(e);
             }
         }

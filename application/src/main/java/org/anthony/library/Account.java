@@ -11,20 +11,27 @@ public class Account {
         static final int LIBRARIAN = 2;
     }
 
-    String accountName;
     int level = AccountSecurity.GUEST;
+    Member member;
 
-    public Account() { accountName = "Guest"; }
-
-    public Account(String name, int level)
+    int getLibraryCard() {return member.getLibraryCard();}
+    String getAccountname() 
     {
-        this.accountName = name;
-        this.level = level;
+        switch(level)
+        {
+            case AccountSecurity.MEMBER:
+                return member.getMemberName();
+            case AccountSecurity.GUEST:
+            default:
+                return "Guest";
+        }
     }
+
+    public Account() { level = AccountSecurity.GUEST; }
 
     public Account(Member model)
     {
-        this.accountName = model.getMemberName();
+        this.member = model;
         this.level = AccountSecurity.MEMBER;
     }
 }

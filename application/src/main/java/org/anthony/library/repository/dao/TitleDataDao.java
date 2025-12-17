@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.anthony.library.repository.ConnectionManager;
 import org.anthony.library.repository.entity.TitleDataEntity;
@@ -31,6 +32,32 @@ public class TitleDataDao
             rs.getInt("num_copies"),
             rs.getString("genre")
         );
+    }
+
+    public Optional<TitleDataEntity> findById(Integer id) throws SQLException {
+        Connection connection = ConnectionManager.getConnection();
+        String sql = 
+            "SELECT * FROM title_data " + 
+            "WHERE isbn = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) 
+        {
+            ps.setInt(1, id);
+
+            var rs = ps.executeQuery();
+            if (rs.next())
+            {
+                return Optional.of(Pack(rs));
+            }
+            else
+            {
+                return Optional.empty();
+            }
+        }
+        catch (SQLException e) {
+            LibraryLogger.LogException(e);
+        }
+
+        return Optional.empty();
     }
 
     public List<TitleDataEntity> RetrieveAllTitleData() throws SQLException

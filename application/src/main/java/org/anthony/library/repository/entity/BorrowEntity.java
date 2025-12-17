@@ -3,20 +3,20 @@ package org.anthony.library.repository.entity;
 import java.sql.Date;
 import java.util.Objects;
 
-public class Borrow {
+public class BorrowEntity {
     Integer book_id;
     Integer library_card_number;
     Date checkout_date;
     Date due_date;
 
-    public Borrow(Integer book_id, Integer library_card_number, Date checkout_date, Date due_date) {
+    public BorrowEntity(Integer book_id, Integer library_card_number, Date checkout_date, Date due_date) {
         this.book_id = book_id;
         this.library_card_number = library_card_number;
         this.checkout_date = checkout_date;
         this.due_date = due_date;
     }
 
-    public Borrow() {
+    public BorrowEntity() {
     }
 
     public Integer getBook_id() {
@@ -84,7 +84,7 @@ public class Borrow {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Borrow other = (Borrow) obj;
+        final BorrowEntity other = (BorrowEntity) obj;
         if (!Objects.equals(this.book_id, other.book_id)) {
             return false;
         }

@@ -9,23 +9,23 @@ import java.util.List;
 import java.util.Optional;
 
 import org.anthony.library.repository.ConnectionManager;
-import org.anthony.library.repository.entity.Borrow;
+import org.anthony.library.repository.entity.BorrowEntity;
 import org.anthony.library.util.LibraryLogger;
 
-public class BorrowDao implements DaoInterface<Borrow, Integer>
+public class BorrowDao implements DaoInterface<BorrowEntity, Integer>
 {
-    private List<Borrow> PackAll(ResultSet rs) throws SQLException
+    private List<BorrowEntity> PackAll(ResultSet rs) throws SQLException
     {
-        ArrayList<Borrow> ret = new ArrayList<>();
+        ArrayList<BorrowEntity> ret = new ArrayList<>();
         while(rs.next())
         {
             ret.add(Pack(rs));
         }
         return ret;
     }
-    private Borrow Pack(ResultSet rs) throws SQLException
+    private BorrowEntity Pack(ResultSet rs) throws SQLException
     {
-        return new Borrow
+        return new BorrowEntity
         (
             rs.getInt("book_id"),
             rs.getInt("library_card_num"),
@@ -35,7 +35,7 @@ public class BorrowDao implements DaoInterface<Borrow, Integer>
     }
 
     @Override
-    public Integer Create(Borrow entity) throws SQLException {
+    public Integer Create(BorrowEntity entity) throws SQLException {
         Integer val = null;
         Connection connection = ConnectionManager.getConnection();
         String sql = 
@@ -62,7 +62,7 @@ public class BorrowDao implements DaoInterface<Borrow, Integer>
     }
 
     @Override
-    public Optional<Borrow> findById(Integer id) throws SQLException {
+    public Optional<BorrowEntity> findById(Integer id) throws SQLException {
         Connection connection = ConnectionManager.getConnection();
         String sql = 
             "SELECT * FROM borrows " + 
@@ -89,7 +89,7 @@ public class BorrowDao implements DaoInterface<Borrow, Integer>
     }
 
     @Override
-    public List<Borrow> findAll() throws SQLException {
+    public List<BorrowEntity> findAll() throws SQLException {
         Connection connection = ConnectionManager.getConnection();
         String sql = "SELECT * FROM borrows";
 
@@ -105,8 +105,27 @@ public class BorrowDao implements DaoInterface<Borrow, Integer>
         return new ArrayList<>();
     }
 
+    public List<BorrowEntity> findByLibraryCard(Integer card_id) throws SQLException
+    {
+        Connection connection = ConnectionManager.getConnection();
+        String sql = "SELECT * FROM borrows WHERE library_card_num = ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) 
+        {
+            ps.setInt(1, card_id);
+            ResultSet rs = ps.executeQuery();
+            
+            return PackAll(rs);
+        } catch (SQLException e) {
+            LibraryLogger.LogException(e);
+        }
+
+        return new ArrayList<>();
+    }
+
+
     @Override
-    public Borrow updateById(Borrow entity) throws SQLException {
+    public BorrowEntity updateById(BorrowEntity entity) throws SQLException {
         String sql = 
             "UPDATE borrows " +
             "SET library_card_num = ?, checkout_date = ?, due_date = ? " +

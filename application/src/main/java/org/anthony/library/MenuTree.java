@@ -94,6 +94,8 @@ public class MenuTree implements Serializable
             this.content_request = content_request;
         }
     }
+    
     public Entry menu;
     public Entry menu_login;
+    public Entry menu_book;
 }

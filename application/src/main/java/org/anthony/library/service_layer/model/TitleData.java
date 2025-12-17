@@ -6,10 +6,8 @@ public class TitleData {
     Title title;
     Integer numCopies;
     String genres;
-//    List<String> genres; //the query would not have GenreIds
 
     public TitleData(Integer numCopies, Title title, String genres) {
-//        this.genres = genre;
         this.numCopies = numCopies;
         this.title = title;
         this.genres = genres;

@@ -33,7 +33,8 @@
             },
             {
                 "name": "View my checked out books",
-                "header": "PLACEHOLDER",
+                "header": "Currently Borrowing:",
+                "content_request": "display_borrows {CARD_ID}",
                 "options": [],
                 "level": 1
             },
@@ -54,6 +55,18 @@
                 "header": "PLACEHOLDER",
                 "options": [],
                 "level": 2
+            }
+        ]
+    },
+    "menu_book":
+    {
+        "header": "details on {BOOK_NAME}",
+        "content_request": "book_details {ISBN}",
+        "options": 
+        [
+            {
+                "name": "Borrow",
+                "service_request": "borrow {ISBN}"
             }
         ]
     }
