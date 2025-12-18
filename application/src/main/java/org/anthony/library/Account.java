@@ -14,7 +14,13 @@ public class Account {
     int level = AccountSecurity.GUEST;
     Member member;
 
-    int getLibraryCard() {return member.getLibraryCard();}
+    int getLibraryCard() 
+    {
+        if (member != null)
+            return member.getLibraryCard();
+        else
+            return -1;
+    }
     String getAccountname() 
     {
         switch(level)

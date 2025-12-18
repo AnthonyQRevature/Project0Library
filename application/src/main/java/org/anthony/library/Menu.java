@@ -1,6 +1,7 @@
 package org.anthony.library;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -40,20 +41,14 @@ public class Menu
         {
             Content ret = new Content();
             ret.header = header;
-
-            for (var e : allOptions) 
-            {
-                if (e.level == 0 || e.level == level)
-                {
-                    ret.options.add(e);
-                }
-            }
+            ret.options = new ArrayList<>(Arrays.asList(allOptions));
 
             if (entry.content_request != null)
             {
                 ContentRequest(entry.content_request, ret);
             }
 
+            ret.options.removeIf((Entry e)->e.level != 0 || e.level != level);
             return ret;
         }
 
@@ -249,6 +244,7 @@ public class Menu
                 {
                     Entry e = new Entry();
                     e.name = title.getTitle();
+                    e.level = 1;
                     e.service_request = String.format("book_details %d", title.getIsbn());
                     ret.options.add(e);
                 }
@@ -265,6 +261,7 @@ public class Menu
                     {
                         Entry e = new Entry();
                         e.name = borrow.get_title();
+                        e.level = 1;
                         e.service_request = String.format("borrow_details %d", borrow.get_book_id());
                         ret.options.add(e);
                     }
