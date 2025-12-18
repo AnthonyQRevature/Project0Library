@@ -39,9 +39,9 @@ public class BorrowDao implements DaoInterface<BorrowEntity, Integer>
         Integer val = null;
         Connection connection = ConnectionManager.getConnection();
         String sql = 
-            "INSERT INTO borrows(book_id, library_card_num, checkout_date, due_date, fine) " +
+            "INSERT INTO borrows(book_id, library_card_num, checkout_date, due_date) " +
             "VALUES (?, ?, ?, ?)" +
-            "RETURNING id";
+            "RETURNING book_id";
         try(PreparedStatement ps = connection.prepareStatement(sql)) {
             
             ps.setInt(1, entity.getBook_id());
@@ -52,7 +52,7 @@ public class BorrowDao implements DaoInterface<BorrowEntity, Integer>
             ResultSet rs = ps.executeQuery();
             if (rs.next())
             {
-                val = rs.getInt("id");
+                val = rs.getInt("book_id");
             }
         } catch (SQLException e) {
             LibraryLogger.LogException(e);

@@ -1,5 +1,6 @@
 package org.anthony.library.service_layer.service;
 
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +43,19 @@ public class BorrowService {
         {
             LibraryLogger.LogException(e);
             return new ArrayList<>();
+        }
+    }
+
+    //UNTESTED
+    public int AddBorrow(Integer libraryCard, Integer book_id, Date checkoutDate, Date dueDate) {
+        try
+        {
+            return borrowDao.Create(new BorrowEntity(book_id, libraryCard, checkoutDate, dueDate));
+        }
+        catch (SQLException e)
+        {
+            LibraryLogger.LogException(e);
+            return -1;
         }
     }
 }

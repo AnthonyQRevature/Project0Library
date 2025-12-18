@@ -27,7 +27,7 @@
         [
             {
                 "name": "Browse books",
-                "header": "PLACEHOLDER",
+                "header": "View all Books",
                 "content_request": "display_books",
                 "options": []
             },
@@ -42,7 +42,7 @@
                 "name": "Return my books",
                 "header": "PLACEHOLDER",
                 "options": [],
-                "level": 1
+                "level": -1
             },
             {
                 "name": "Pay my fines",

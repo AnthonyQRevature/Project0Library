@@ -6,11 +6,23 @@ import java.util.Optional;
 import org.anthony.library.repository.dao.DaoInterface;
 import org.anthony.library.repository.entity.MemberEntity;
 import org.anthony.library.service_layer.model.Member;
+import org.anthony.library.util.LibraryLogger;
 
 public class MemberService {
     private static Member convert(MemberEntity e)
     {
         return new Member(e);
+    }
+    private static Optional<Member> convert(Optional<MemberEntity> e)
+    {
+        if (e.isEmpty())
+        {
+            return Optional.empty();
+        }
+        else
+        {
+            return Optional.of(convert(e.get()));
+        }
     }
 
     DaoInterface<MemberEntity, Integer> dao;
@@ -36,6 +48,19 @@ public class MemberService {
         }
         catch (SQLException e)
         {
+            return Optional.empty();
+        }
+    }
+    
+    //UNTESTED
+    public Optional<Member> GetMemberById(int libraryCard) {
+        try
+        {
+            return convert(dao.findById(libraryCard));
+        }
+        catch (SQLException e)
+        {
+            LibraryLogger.LogException(e);
             return Optional.empty();
         }
     }

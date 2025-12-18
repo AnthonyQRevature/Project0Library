@@ -8,16 +8,20 @@ import java.util.Optional;
 
 import org.anthony.library.repository.dao.BookDao;
 import org.anthony.library.repository.dao.TitleDao;
+import org.anthony.library.repository.dao.TitleDataDao;
 import org.anthony.library.repository.entity.BookEntity;
 import org.anthony.library.repository.entity.TitleEntity;
 import org.anthony.library.service_layer.model.Book;
 import org.anthony.library.service_layer.model.Title;
 import org.anthony.library.service_layer.service.BookService;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @SuppressWarnings("unused")
@@ -28,6 +32,8 @@ public class BookServiceTest {
     BookDao bookDao;
     @Mock
     TitleDao titleDao;
+    @Mock
+    TitleDataDao titleDataDao;
 
     @InjectMocks
     BookService bookService;
@@ -98,6 +104,14 @@ public class BookServiceTest {
         resultTitles.add(new Title(testTitles.get(2)));
     }
 
+    //quantum unit test
+    //issue with Mockito
+    @AfterEach
+    void Reset()
+    {
+        Mockito.reset(bookDao, titleDao, titleDataDao);
+    }
+
     @Test
     void FindAllTitles_Success() throws SQLException
     {
@@ -112,10 +126,10 @@ public class BookServiceTest {
     }
 
     @Test
-    void OptainBookInstance_Success() throws SQLException
+    void ObtainBookInstance_Success() throws SQLException
     {
         //Arrange
-        when(bookDao.ObtainBookByIsbn(123)).thenReturn(Optional.of(new BookEntity(1, 123)));
+        when(bookDao.ObtainUnborrowedBookByIsbn(123)).thenReturn(Optional.of(new BookEntity(1, 123)));
         
         //Act
         var result = bookService.ObtainBookInstance(new Title(123, "To Kill a Mockingbird"));

@@ -77,12 +77,12 @@ public class BookDao implements DaoInterface<BookEntity, Integer>{
         return Optional.empty();
     }
 
-    public Optional<BookEntity> ObtainBookByIsbn(Integer isbn) throws SQLException
+    public Optional<BookEntity> ObtainUnborrowedBookByIsbn(Integer isbn) throws SQLException
     {
         Connection connection = ConnectionManager.getConnection();
         String sql = 
-            "SELECT * FROM books " + 
-            "WHERE isbn = ?" + 
+            "SELECT * FROM unborrowed " + 
+            "WHERE isbn = ? " +
             "LIMIT 1";
         try (PreparedStatement ps = connection.prepareStatement(sql)) 
         {
@@ -166,5 +166,4 @@ public class BookDao implements DaoInterface<BookEntity, Integer>{
         
         return false;
     }
-
 }

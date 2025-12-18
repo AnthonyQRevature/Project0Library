@@ -3,6 +3,7 @@ SELECT * FROM books;
 SELECT * FROM borrows;
 
 SELECT * FROM title_data;
+SELECT * FROM unborrowed;
 SELECT * FROM test;
 DROP VIEW title_data;
 DROP VIEW test;

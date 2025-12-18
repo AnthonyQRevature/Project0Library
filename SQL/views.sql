@@ -1,23 +1,5 @@
 CREATE VIEW title_data AS
 (
-    SELECT lq.title, lq.isbn, lq.num_copies, rq.genre
-    FROM
-    (
-        SELECT title, titles.isbn, COUNT(books.book_id) AS num_copies
-        FROM books INNER JOIN titles USING (isbn)
-        GROUP BY titles.isbn
-    ) AS lq JOIN
-    (
-        SELECT titles.isbn, STRING_AGG(genres.genre_name, ', ') AS genre
-        FROM titles INNER JOIN categories USING (isbn)
-        INNER JOIN genres USING (genre_id)
-        GROUP BY titles.isbn
-    ) AS rq USING (isbn)
-    ORDER BY title ASC
-);
-
-CREATE VIEW test AS
-(
     SELECT book_count.title, book_count.isbn, book_count.num_copies - borrowed_count.borrowed AS num_copies, agg_genres.genre
     FROM
     (
@@ -38,4 +20,13 @@ CREATE VIEW test AS
     ) AS borrowed_count USING (isbn)
     WHERE book_count.num_copies - borrowed_count.borrowed > 0
     ORDER BY title ASC
+);
+
+CREATE VIEW unborrowed AS
+(
+    SELECT * FROM books
+    WHERE book_id NOT IN
+    (
+        SELECT book_id FROM borrows
+    )
 );

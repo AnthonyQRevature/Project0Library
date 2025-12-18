@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import org.anthony.library.repository.dao.BookDao;
 import org.anthony.library.repository.dao.DaoInterface;
+import org.anthony.library.repository.dao.TitleDao;
 import org.anthony.library.repository.dao.TitleDataDao;
 import org.anthony.library.repository.entity.BookEntity;
 import org.anthony.library.repository.entity.TitleDataEntity;
@@ -19,7 +20,7 @@ import org.anthony.library.util.LibraryLogger;
 
 public class BookService {
     BookDao bookDao;
-    DaoInterface<TitleEntity, Integer> titleDao;
+    TitleDao titleDao;
     TitleDataDao titleDataDao;
 
     Book convert(BookEntity e, TitleEntity t)
@@ -51,6 +52,7 @@ public class BookService {
         for (var o : e) {
             ret.add(ConvertTitle(o));
         }
+        
         return ret;
     }
     TitleData ConvertTitleData(TitleDataEntity e)
@@ -100,7 +102,7 @@ public class BookService {
     {
         try
         {
-            return convert(bookDao.ObtainBookByIsbn(title.getIsbn()), title);
+            return convert(bookDao.ObtainUnborrowedBookByIsbn(title.getIsbn()), title);
         }
         catch (SQLException e)
         {
@@ -135,7 +137,7 @@ public class BookService {
     {
         try
         {
-            return convert(bookDao.findById(isbn), titleDao.findById(isbn).get());
+            return convert(bookDao.ObtainUnborrowedBookByIsbn(isbn), titleDao.findById(isbn).get());
         }
         catch (SQLException e)
         {
@@ -190,7 +192,7 @@ public class BookService {
     //Dependency Injection
     public BookService(
         BookDao bookDao,
-        DaoInterface<TitleEntity, Integer> titleDao,
+        TitleDao titleDao,
         TitleDataDao titleDataDao
     ) {
         this.bookDao = bookDao;
