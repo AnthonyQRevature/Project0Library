@@ -1,11 +1,8 @@
 package org.anthony.library;
 
 import java.sql.Date;
-
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,8 +31,13 @@ public class BookController {
         this.service = service;
     }
 
-    public Optional<Book> RetrieveBook(int isbn) {
-        return service.ObtainBookByIsbn(isbn);
+    public Optional<Book> RetrieveUnborrowedBook(int isbn) {
+        return service.ObtainUnborrowedBookByIsbn(isbn);
+    }
+
+    public Optional<Book> RetrieveBook(int book_id)
+    {
+        return service.ObtainBookById(book_id);
     }
 
     public boolean BorrowBook(Integer libraryCard, Integer book_id) {
@@ -56,6 +58,30 @@ public class BookController {
             if (id > 0)
             {
                 LibraryLogger.getLogger().info("Inserted Borrow %d", id);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
+
+    boolean ReturnBook(int libraryCard, Integer book_id) {
+        var acct = memberService.GetMemberById(libraryCard);
+        var book = service.ObtainBookById(book_id);
+
+        if (acct.isEmpty() || book.isEmpty())
+        {
+            return false;
+        }
+        else
+        {
+            boolean b = borrowService.RemoveBorrow(book_id);
+            if (b)
+            {
+                //success
+                LibraryLogger.getLogger().info("Deleted borrow %d", book_id);
                 return true;
             }
             else

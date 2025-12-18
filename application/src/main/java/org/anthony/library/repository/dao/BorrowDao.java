@@ -105,6 +105,35 @@ public class BorrowDao implements DaoInterface<BorrowEntity, Integer>
         return new ArrayList<>();
     }
 
+    public boolean HasBorrow(Integer libraryCard, Integer book_id) throws SQLException
+    {
+        Connection connection = ConnectionManager.getConnection();
+        String sql = 
+            "SELECT library_card_num, isbn FROM borrows " + 
+            "INNER JOIN books USING (book_id) " +
+            "WHERE library_card_num = ? AND isbn = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) 
+        {
+            ps.setInt(1, libraryCard);
+            ps.setInt(2, book_id);
+
+            var rs = ps.executeQuery();
+            if (rs.next())
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        catch (SQLException e) {
+            LibraryLogger.LogException(e);
+        }
+
+        return false;
+    }
+
     public List<BorrowEntity> findByLibraryCard(Integer card_id) throws SQLException
     {
         Connection connection = ConnectionManager.getConnection();
@@ -153,7 +182,7 @@ public class BorrowDao implements DaoInterface<BorrowEntity, Integer>
     @Override
     public boolean deleteById(Integer id) throws SQLException {
         String sql = 
-            "DELETE FROM borrow " +
+            "DELETE FROM borrows " +
             "WHERE book_id = ?";
         Connection connection = ConnectionManager.getConnection();
 

@@ -58,7 +58,6 @@ public class Menu
         }
 
         //should not be virtual
-        //virtual
         public void PrintMenu(Content body)
         {
             List<Entry> validOptions = body.options;
@@ -126,7 +125,7 @@ public class Menu
                         
                         //obtain book
                         //expect not to fail
-                        Book book = bookController.RetrieveBook(isbn).get();
+                        Book book = bookController.RetrieveUnborrowedBook(isbn).get();
                         PromptBook(book, acctEntry.acct, input);
                     }
                     catch (Exception e)
@@ -134,6 +133,24 @@ public class Menu
                         LibraryLogger.LogException(e);
                     }
                     break;
+                }
+                case "borrow_details":
+                {
+                    try
+                    {
+                        //int card_id = Integer.parseInt(args[1]);
+                        //already have account cuz it was pushed onto the stack (the right way)
+                        int book_id = Integer.parseInt(args[1]);
+
+                        Book book = bookController.RetrieveBook(book_id).get();
+                        AccMenuEntry e = (AccMenuEntry)(this);
+                        Account acct = e.acct;
+                        PromptReturnBook(book, acct, input);
+                    }
+                    catch (Exception e)
+                    {
+                        LibraryLogger.LogException(e);
+                    }
                 }
                 default:
                     //return;
@@ -209,7 +226,7 @@ public class Menu
         }
         return null;
     }
-    private static class Content
+    protected static class Content
     {
         String header;
         String content = "";
@@ -248,7 +265,7 @@ public class Menu
                     {
                         Entry e = new Entry();
                         e.name = borrow.get_title();
-                        e.service_request = String.format("borrow_details %d %d", card_id, borrow.get_isbn());
+                        e.service_request = String.format("borrow_details %d", borrow.get_book_id());
                         ret.options.add(e);
                     }
                     return;
@@ -263,12 +280,50 @@ public class Menu
             default:
                 //unneccessary
                 ret.options = options;
-                return;
+                //return;
         }
     }
 
+    public void PromptReturnBook(Book book, Account borrower, Scanner input)
+    {
+        System.out.printf("Do you want to return %s \n", book.getTitle());
+        System.out.println("1: yes");
+        System.out.println("2: no");
+
+        try
+        {
+            int selection = Integer.parseInt(input.nextLine());
+            if (selection == 1)
+            {
+                boolean b = bookController.ReturnBook(borrower.getLibraryCard(), book.getBookId());
+                if (b)
+                {
+                    System.out.println("Operation successful");
+                }
+                else
+                {
+                    System.out.println("System Error");
+                }
+            }
+        }
+        catch(NumberFormatException e)
+        {
+            //ignore improper input and select no
+        }
+    }
     public void PromptBook(Book book, Account borrower, Scanner input)
     {
+        //check if they already have that book borrowed
+        if (bookController.borrowService.IsBorrowed(book.getIsbn(), borrower.getLibraryCard()))
+        {
+            //already have the book borroed 
+            System.out.printf("You have already borrowed %s\n", book.getTitle());
+            System.out.println("1: return");
+            
+            input.nextLine();
+            return;
+        }
+
         System.out.printf("Do you want to borrow %s\n", book.getTitle());
         System.out.println("1: yes");
         System.out.println("2: no");

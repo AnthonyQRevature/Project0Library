@@ -58,4 +58,30 @@ public class BorrowService {
             return -1;
         }
     }
+
+    //UNTESTED
+    public boolean RemoveBorrow(Integer book_id) 
+    {
+        try
+        {
+            return borrowDao.deleteById(book_id);
+        }
+        catch (SQLException e)
+        {
+            LibraryLogger.LogException(e);
+            return false;
+        }
+    }
+
+    public boolean IsBorrowed(Integer isbn, Integer libraryCard) {
+        try
+        {
+            return borrowDao.HasBorrow(libraryCard, isbn);
+        }
+        catch (SQLException e)
+        {
+            LibraryLogger.LogException(e);
+            return false;
+        }
+    }
 }

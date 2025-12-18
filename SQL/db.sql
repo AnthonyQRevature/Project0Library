@@ -8,6 +8,6 @@ SELECT * FROM test;
 DROP VIEW title_data;
 DROP VIEW test;
 
-SELECT isbn, COUNT(library_card_num) as borrowed FROM books
-LEFT JOIN borrows using (book_id)
-GROUP BY isbn
+SELECT library_card_num, isbn FROM borrows
+INNER JOIN books USING (book_id)
+WHERE library_card_num = 42 AND isbn = 456;

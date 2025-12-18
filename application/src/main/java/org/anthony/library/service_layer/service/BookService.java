@@ -7,7 +7,6 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.anthony.library.repository.dao.BookDao;
-import org.anthony.library.repository.dao.DaoInterface;
 import org.anthony.library.repository.dao.TitleDao;
 import org.anthony.library.repository.dao.TitleDataDao;
 import org.anthony.library.repository.entity.BookEntity;
@@ -133,7 +132,7 @@ public class BookService {
     }
 
     //UNTESTED
-    public Optional<Book> ObtainBookByIsbn(Integer isbn)
+    public Optional<Book> ObtainUnborrowedBookByIsbn(Integer isbn)
     {
         try
         {

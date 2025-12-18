@@ -29,4 +29,9 @@ public class Borrow {
         this.dueDate = dueDate;
         this.card_id = card_id;
     }
+
+    public int get_book_id() 
+    {
+        return book.getBookId();
+    }
 }
