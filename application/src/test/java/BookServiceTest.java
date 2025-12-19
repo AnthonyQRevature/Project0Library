@@ -1,7 +1,4 @@
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -10,18 +7,22 @@ import org.anthony.library.repository.dao.BookDao;
 import org.anthony.library.repository.dao.TitleDao;
 import org.anthony.library.repository.dao.TitleDataDao;
 import org.anthony.library.repository.entity.BookEntity;
+import org.anthony.library.repository.entity.TitleDataEntity;
 import org.anthony.library.repository.entity.TitleEntity;
 import org.anthony.library.service_layer.model.Book;
 import org.anthony.library.service_layer.model.Title;
+import org.anthony.library.service_layer.model.TitleData;
 import org.anthony.library.service_layer.service.BookService;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @SuppressWarnings("unused")
@@ -37,57 +38,6 @@ public class BookServiceTest {
 
     @InjectMocks
     BookService bookService;
-
-    /*
-    ArrayList<BookEntity> testList;
-    ArrayList<Book> resultList;
-
-    @BeforeEach
-    void Setup()
-    {
-        testList = new ArrayList<BookEntity>();
-        testList.add(new BookEntity(1, 123));
-        testList.add(new BookEntity(2, 123));
-        testList.add(new BookEntity(3, 123));
-        testList.add(new BookEntity(4, 456));
-        testList.add(new BookEntity(5, 456));
-        testList.add(new BookEntity(6, 456));
-        testList.add(new BookEntity(7, 134));
-
-        resultList = new ArrayList<Book>();
-        resultList.add(new Book(testList.get(0)));
-        resultList.add(new Book(testList.get(1)));
-        resultList.add(new Book(testList.get(2)));
-        resultList.add(new Book(testList.get(3)));
-        resultList.add(new Book(testList.get(4)));
-        resultList.add(new Book(testList.get(5)));
-        resultList.add(new Book(testList.get(6)));
-    }
-
-    @Test
-    void FindAll_Empty() throws SQLException {
-        // Arrange
-        when(bookDao.findAll()).thenReturn(new ArrayList<>());
-
-        // Act
-        var books = bookService.RetrieveAllBookInstances();
-
-        // Assert
-        assertEquals(new ArrayList<Book>(), books);
-    }
-
-    @Test
-    void FindAll_Success() throws SQLException {
-        // Arrange
-        when(bookDao.findAll()).thenReturn(testList);
-
-        // Act
-        var books = bookService.RetrieveAllBookInstances();
-
-        // Assert
-        assertEquals(resultList, books);
-    }
-    */
 
     ArrayList<TitleEntity> testTitles = new ArrayList<>();
     ArrayList<Title> resultTitles = new ArrayList<>();
@@ -109,9 +59,10 @@ public class BookServiceTest {
     @AfterEach
     void Reset()
     {
+        //clean
         Mockito.reset(bookDao, titleDao, titleDataDao);
     }
-
+    
     @Test
     void FindAllTitles_Success() throws SQLException
     {
@@ -125,6 +76,7 @@ public class BookServiceTest {
         assertEquals(resultTitles, result);
     }
 
+    //ObtainBookInstance
     @Test
     void ObtainBookInstance_Success() throws SQLException
     {
@@ -136,5 +88,101 @@ public class BookServiceTest {
 
         //Assert
         assertEquals(Optional.of(new Book(1, 123, "To Kill a Mockingbird")), result);
+    }
+
+    //ObtainBookById
+    @Test
+    void ObtainBookById_Success() throws SQLException
+    {
+        //arrange
+        Integer testId = 5;
+        BookEntity testBook = new BookEntity(testId, 123);
+        TitleEntity testTitle = new TitleEntity(testBook.getIsbn(), "TEST");
+        when(bookDao.findById(5)).thenReturn(Optional.of(testBook));
+        when(titleDao.findById(testBook.getIsbn())).thenReturn(Optional.of(testTitle));
+
+        Book expected = new Book(testBook, new Title(testTitle));
+
+        //act
+        var book = bookService.ObtainBookById(testId);
+
+        //assert
+        assertTrue(!book.isEmpty());
+        assertEquals(expected, book.get());
+    }
+
+    //ObtainBookById
+    @Test
+    void ObtainBookById_Fail() throws SQLException
+    {
+        //arrange
+        Integer testId = 5;
+        BookEntity testBook = new BookEntity(testId, 123);
+        when(bookDao.findById(5)).thenReturn(Optional.of(testBook));
+        when(titleDao.findById(testBook.getIsbn())).thenReturn(Optional.empty());
+        //act
+        var book = bookService.ObtainBookById(testId);
+
+        //assert
+        assertTrue(book.isEmpty());
+    }
+
+    //ObtainUnborrowedBookByIsbn
+    @Test
+    void ObtainUnborrowedBookByIsbn_Success() throws SQLException
+    {
+        //Arrange
+        Integer testInput = 123;
+        BookEntity book = new BookEntity(4, testInput);
+        TitleEntity title = new TitleEntity(testInput, "TEST");
+        when(bookDao.ObtainUnborrowedBookByIsbn(testInput)).thenReturn(Optional.of(book));
+        when(titleDao.findById(testInput)).thenReturn(Optional.of(title));
+
+        Book expected = new Book(book, new Title(title));
+
+        //Act
+        var res = bookService.ObtainUnborrowedBookByIsbn(testInput);
+
+        //Assert
+        assertTrue(!res.isEmpty());
+        assertEquals(expected, res.get());
+    }
+
+    //ObtainUnborrowedBookByIsbn
+    @Test
+    void ObtainUnborrowedBookByIsbn_Fail() throws SQLException
+    {
+        //Arrange
+        Integer testInput = 123;
+        BookEntity book = new BookEntity(4, testInput);
+        TitleEntity title = new TitleEntity(testInput, "TEST");
+        when(bookDao.ObtainUnborrowedBookByIsbn(testInput)).thenReturn(Optional.empty());
+        when(titleDao.findById(testInput)).thenReturn(Optional.of(title));
+
+        //Act
+        var res = bookService.ObtainUnborrowedBookByIsbn(testInput);
+
+        //Assert
+        assertTrue(res.isEmpty());
+    }
+
+    //RetrieveAllTitles
+    @Test
+    void RetrieveAllTitles_Success() throws SQLException
+    {
+        ArrayList<TitleDataEntity> testData = new ArrayList<>();
+        testData.add(new TitleDataEntity(123, "Book1", 3, "abc"));
+        testData.add(new TitleDataEntity(134, "Book2", 2, "def"));
+        ArrayList<TitleData> expected = new ArrayList<>();
+        expected.add(new TitleData(3, new Title(123, "Book1"), "abc"));
+        expected.add(new TitleData(2, new Title(134, "Book2"), "def"));
+
+        when(titleDataDao.RetrieveAllTitleData()).thenReturn(testData);
+
+        //act
+        var res = bookService.RetrieveAllTitles();
+
+        //assert
+        assertEquals(expected, res);
     }
 }

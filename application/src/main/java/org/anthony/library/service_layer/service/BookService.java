@@ -96,7 +96,7 @@ public class BookService {
     */
 
     //obtain the first Book with the isbn
-    //UNTESTED
+    //UNUSED
     public Optional<Book> ObtainBookInstance(Title title)
     {
         try
@@ -110,7 +110,7 @@ public class BookService {
         }
     }
 
-    //UNTESTED
+    //tested, used
     public Optional<Book> ObtainBookById(Integer book_id)
     {
         //if anything is null catch exception and return empty
@@ -131,7 +131,7 @@ public class BookService {
         }
     }
 
-    //UNTESTED
+    //tested, used
     public Optional<Book> ObtainUnborrowedBookByIsbn(Integer isbn)
     {
         try
@@ -145,6 +145,7 @@ public class BookService {
         }
     }
 
+    //tested, UNUSED
     public List<Title> RetrieveAllBooks()
     {
         try
@@ -158,6 +159,7 @@ public class BookService {
         }
     }
 
+    //UNUSED
     public Optional<TitleData> RetrieveTitleById(Integer isbn)
     {
         try
@@ -175,6 +177,7 @@ public class BookService {
     //connect Title table with Genre and aggregate BookInstance
     //most reliable way to achieve this is with a view since doing this in java
     //would require querrying from 3 different tables
+    //tested, used
     public List<TitleData> RetrieveAllTitles()
     {
         try 
