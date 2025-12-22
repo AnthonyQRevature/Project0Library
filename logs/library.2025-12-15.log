@@ -1,9 +1,0 @@
-2025-12-15 15:55:09.760 [main] ERROR o.anthony.library.util.LibraryLogger - An error occured
-org.postgresql.util.PSQLException: The column name genre was not found in this ResultSet.
-	at org.postgresql.jdbc.PgResultSet.findColumn(PgResultSet.java:3208)
-	at org.postgresql.jdbc.PgResultSet.getString(PgResultSet.java:3044)
-	at org.anthony.library.repository.dao.TitleDataDao.Pack(TitleDataDao.java:32)
-	at org.anthony.library.repository.dao.TitleDataDao.PackAll(TitleDataDao.java:21)
-	at org.anthony.library.repository.dao.TitleDataDao.RetrieveAllTitleData(TitleDataDao.java:44)
-	at org.anthony.library.service_layer.service.BookService.RetrieveAllTitles(BookService.java:119)
-	at Demo.main(Demo.java:29)
