@@ -16,14 +16,25 @@ import org.anthony.library.util.LibraryLogger;
 
 public class BorrowService {
     BorrowDao borrowDao = new BorrowDao();
+    //questionable decision
     BookService bs = new BookService(new BookDao(), new TitleDao(), new TitleDataDao());
+
+    public BorrowService() {
+    }
+
+    public BorrowService(BorrowDao dao, BookService bs) 
+    {
+        this.borrowDao = dao;
+        this.bs = bs;
+    }
+
 
     Borrow Convert(int card_id, BorrowEntity e, Book b)
     {
         return new Borrow(b, e.getCheckout_date(), e.getDue_date(), card_id);
     }
 
-    //UNTESTED
+    //tested
     public List<Borrow> GetBorrowsForMember(int card_id)
     {
         try
@@ -46,7 +57,7 @@ public class BorrowService {
         }
     }
 
-    //UNTESTED
+    //tested
     public int AddBorrow(Integer libraryCard, Integer book_id, Date checkoutDate, Date dueDate) {
         try
         {
@@ -59,7 +70,7 @@ public class BorrowService {
         }
     }
 
-    //UNTESTED
+    //too simple to test
     public boolean RemoveBorrow(Integer book_id) 
     {
         try
@@ -73,6 +84,7 @@ public class BorrowService {
         }
     }
 
+    //too simple to test
     public boolean IsBorrowed(Integer isbn, Integer libraryCard) {
         try
         {

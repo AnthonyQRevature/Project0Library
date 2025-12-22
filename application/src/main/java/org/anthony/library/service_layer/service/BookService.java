@@ -119,12 +119,7 @@ public class BookService {
             Optional<BookEntity> book = bookDao.findById(book_id);
             return convert(book, titleDao.findById(book.get().getIsbn()).get());
         }
-        catch (SQLException e)
-        {
-            LibraryLogger.LogException(e);
-            return Optional.empty();
-        }
-        catch (NoSuchElementException e)
+        catch (SQLException | NoSuchElementException e)
         {
             LibraryLogger.LogException(e);
             return Optional.empty();

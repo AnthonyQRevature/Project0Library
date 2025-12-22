@@ -52,7 +52,7 @@ public class MemberService {
         }
     }
     
-    //UNTESTED
+    //too small to test
     public Optional<Member> GetMemberById(int libraryCard) {
         try
         {

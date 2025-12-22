@@ -1,6 +1,7 @@
 package org.anthony.library.service_layer.model;
 
 import java.sql.Date;
+import java.util.Objects;
 
 import org.anthony.tablePrinter.TablePrinter.Column;
 
@@ -33,5 +34,39 @@ public class Borrow {
     public int get_book_id() 
     {
         return book.getBookId();
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 79 * hash + Objects.hashCode(this.card_id);
+        hash = 79 * hash + Objects.hashCode(this.book);
+        hash = 79 * hash + Objects.hashCode(this.checkoutDate);
+        hash = 79 * hash + Objects.hashCode(this.dueDate);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Borrow other = (Borrow) obj;
+        if (!Objects.equals(this.card_id, other.card_id)) {
+            return false;
+        }
+        if (!Objects.equals(this.book, other.book)) {
+            return false;
+        }
+        if (!Objects.equals(this.checkoutDate, other.checkoutDate)) {
+            return false;
+        }
+        return Objects.equals(this.dueDate, other.dueDate);
     }
 }

@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.anthony.library.repository.ConnectionManager;
-import org.anthony.library.repository.entity.BookEntity;
 import org.anthony.library.repository.entity.TitleEntity;
 import org.anthony.library.util.LibraryLogger;
 

@@ -1,5 +1,7 @@
 package org.anthony.library.service_layer.model;
 
+import java.util.Objects;
+
 import org.anthony.tablePrinter.TablePrinter.Column;
 
 public class TitleData {
@@ -21,4 +23,36 @@ public class TitleData {
     public Integer getNumCopies() {return numCopies;}
     @Column(name="genres", width=20, weight=4)
     public String getGenres() {return genres;}
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 17 * hash + Objects.hashCode(this.title);
+        hash = 17 * hash + Objects.hashCode(this.numCopies);
+        hash = 17 * hash + Objects.hashCode(this.genres);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final TitleData other = (TitleData) obj;
+        if (!Objects.equals(this.genres, other.genres)) {
+            return false;
+        }
+        if (!Objects.equals(this.title, other.title)) {
+            return false;
+        }
+        return Objects.equals(this.numCopies, other.numCopies);
+    }
+
+    
 }

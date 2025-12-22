@@ -1,7 +1,6 @@
 package org.anthony.library.service_layer.model;
 
 import org.anthony.library.repository.entity.BookEntity;
-import org.anthony.library.repository.entity.TitleEntity;
 import org.anthony.library.util.LibraryLogger;
 import org.anthony.tablePrinter.TablePrinter.Column;
 

@@ -48,7 +48,7 @@ public class Menu
                 ContentRequest(entry.content_request, ret);
             }
 
-            ret.options.removeIf((Entry e)->e.level != 0 || e.level != level);
+            ret.options.removeIf((Entry e)->e.level != 0 && e.level != level);
             return ret;
         }
 
@@ -216,6 +216,7 @@ public class Menu
             else
             {
                 //incorrect credentials try again
+                System.out.println("Incorrect credentials. Try again.");
                 //continue;
             }
         }

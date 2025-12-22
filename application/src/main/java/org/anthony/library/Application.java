@@ -4,8 +4,8 @@
 
 package org.anthony.library;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Scanner;
 
 import org.anthony.library.repository.ConnectionManager;
@@ -19,7 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author antho
  */
 public class Application {
-    public static final File MENUFILE = new File("options.json");
+    public static final InputStream MENUFILE = Application.class.getResourceAsStream("/options.json");
     
     public static void main(String[] args) {
 

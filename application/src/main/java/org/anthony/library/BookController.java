@@ -54,10 +54,10 @@ public class BookController {
             //just do 3 weeks
             Date returnDate = Date.valueOf(LocalDate.now().plus(Period.of(0, 0, 21)));
 
-            var id = borrowService.AddBorrow(libraryCard, book_id, currentDate, returnDate);
+            Integer id = borrowService.AddBorrow(libraryCard, book_id, currentDate, returnDate);
             if (id > 0)
             {
-                LibraryLogger.getLogger().info("Inserted Borrow %d", id);
+                LibraryLogger.getLogger().info(String.format("Inserted Borrow %d", id));
                 return true;
             }
             else
@@ -81,7 +81,7 @@ public class BookController {
             if (b)
             {
                 //success
-                LibraryLogger.getLogger().info("Deleted borrow %d", book_id);
+                LibraryLogger.getLogger().info(String.format("Deleted borrow %d", book_id));
                 return true;
             }
             else
