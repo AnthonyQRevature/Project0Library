@@ -27,7 +27,7 @@ public class MemberService {
 
     DaoInterface<MemberEntity, Integer> dao;
 
-    //UNTESTED
+    //tested, used
     public Optional<Member> ValidateAccount(Integer cardNumber, String password)
     {
         try
