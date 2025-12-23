@@ -4,3 +4,4 @@ logs/
 application/target/
 dependency-reduced-pom.xml
 application/src/main/resources/database.properties
+docker
