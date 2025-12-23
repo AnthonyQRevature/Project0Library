@@ -1,2 +1,5 @@
-logs/*
-.vscode/*
+application/logs/
+logs/
+.vscode/
+application/target/
+dependency-reduced-pom.xml

@@ -6,7 +6,7 @@ SELECT * FROM title_data;
 SELECT * FROM unborrowed;
 SELECT * FROM test;
 DROP VIEW title_data;
-DROP VIEW test;
+DROP VIEW unborrowed;
 
 SELECT library_card_num, isbn FROM borrows
 INNER JOIN books USING (book_id)
